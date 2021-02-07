@@ -1,0 +1,14 @@
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe.config
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.pdb
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csprojAssemblyReference.cache
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.exe
+C:\Users\User\source\repos\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.pdb
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe.config
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.pdb
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csprojAssemblyReference.cache
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CoreCompileInputs.cache
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.exe
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.pdb
