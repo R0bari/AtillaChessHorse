@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AtillaChessHorse
 {
@@ -46,37 +45,35 @@ namespace AtillaChessHorse
             KingY = kingPosition.Item2;
         }
 
-        public static string FindWay(ChessField chessField)
+        public static List<MoveDirections> FindWay(ChessField chessField)
         {
             Dictionary<int, ChessField> wrongFields = new Dictionary<int, ChessField>();
-
-            FindOptimalWay(chessField, wrongFields, out string way);
+            FindWayRecurse(chessField, wrongFields, out List<MoveDirections> way);
             return way;
         }
-        public static bool FindOptimalWay(ChessField chessField, 
-            Dictionary<int, ChessField> wrongFields, out string way)
+        private static bool FindWayRecurse(ChessField chessField, 
+            Dictionary<int, ChessField> wrongFields, out List<MoveDirections> way)
         {
-            way = "";
-            //  Путь находится. TODO: нахождение кратчайшего пути, вывод пути 
-            List<MoveDirections> moveSequence = new List<MoveDirections>();
-            Console.WriteLine(chessField.ToString());
-            
+            way = new List<MoveDirections>();
             if (chessField.IsResult())
             {
+                //  Путь найден
                 return true;
             }
 
+            //  Пробуем все шаги по порядку
             for (int i = 0; i < AllMoves.Length; ++i)
             {
                 MoveDirections currentMove = AllMoves[i];
+                //  Если шаг доступен, пробуем для него все шаги
                 if (chessField.IsMoveAvailable(currentMove, wrongFields))
                 {
-                    if (ChessField.FindOptimalWay(chessField.MoveHorse(currentMove, wrongFields), wrongFields, out way))
+                    //  Если путь найден, добавить в список way текущий ход
+                    if (ChessField.FindWayRecurse(chessField.MoveHorse(currentMove, wrongFields), wrongFields, out way))
                     {
-                        way = currentMove.ToString() + "\n" + way;
+                        way.Insert(0, currentMove);
                         return true;
                     }
-                    i = 0;
                 }
             }
 
@@ -85,11 +82,12 @@ namespace AtillaChessHorse
         }
         public ChessField MoveHorse(MoveDirections direction, Dictionary<int, ChessField> wrongFields)
         {
+            ChessField cloneField = (ChessField)this.Clone();
             if (IsMoveAvailable(direction, wrongFields))
             {
-                ChangeHorseCoords(direction);
+                cloneField.ChangeHorseCoords(direction);
             }
-            return (ChessField)this.Clone();
+            return cloneField;
         }
         public bool IsMoveAvailable(MoveDirections direction, Dictionary<int, ChessField> wrongFields)
         {
@@ -119,8 +117,8 @@ namespace AtillaChessHorse
             {
                 Cells[HorseY][HorseX] = CellTypes.D;
                 //  Изменяем положение коня
-                HorseX = HorseX + GetMoveOffsetX(direction);
-                HorseY = HorseY + GetMoveOffsetY(direction);
+                HorseX += GetMoveOffsetX(direction);
+                HorseY += GetMoveOffsetY(direction);
                 //  Изменяем состояние новой клетки
                 Cells[HorseY][HorseX] = CellTypes.H;
             }
@@ -266,13 +264,21 @@ namespace AtillaChessHorse
         }
         public enum MoveDirections
         {
+            [Description("Вверх-влево")]
             TopLeft = 0,
+            [Description("Вверх-вправо")]
             TopRight = 1,
+            [Description("Вправо-вверх")]
             RightTop = 2,
+            [Description("Вправо-вниз")]
             RightBottom = 3,
+            [Description("Вниз-право")]
             BottomRight = 4,
+            [Description("Вниз-влево")]
             BottomLeft = 5,
+            [Description("Влево-вниз")]
             LeftBottom = 6,
+            [Description("Влево-вверх")]
             LeftTop = 7
         }
     }
