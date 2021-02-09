@@ -18,15 +18,17 @@ namespace AtillaChessHorse
                 MoveDirections.LeftBottom,
                 MoveDirections.LeftTop
             };
-        private static Dictionary<int, ChessField> _previousFields { get; set; } = new Dictionary<int, ChessField>();
+        private static Dictionary<int, ChessField> previousFields { get; set; } = new Dictionary<int, ChessField>();
         public CellTypes[][] Cells { get; set; }
         public int Size { get; set; }
         public int HorseX { get; set; }
         public int HorseY { get; set; }
         public int KingX { get; set; }
         public int KingY { get; set; }
+
         private ChessField(int size = 8)
         {
+            Size = size;
             Cells = new CellTypes[size][];
             for (int i = 0; i < size; ++i)
             {
@@ -186,13 +188,13 @@ namespace AtillaChessHorse
 
         private void AddFieldToDictionary(Dictionary<int, ChessField> wrongFields)
         {
-            if (!wrongFields.ContainsKey(this.GetHashCode()))
+            if (!wrongFields.ContainsKey(GetHashCode()))
             {
-                wrongFields.Add(this.GetHashCode(), this);
+                wrongFields.Add(GetHashCode(), this);
             }
-            if (ChessField._previousFields.ContainsKey(this.GetHashCode()))
+            if (previousFields.ContainsKey(GetHashCode()))
             {
-                ChessField._previousFields.Add(this.GetHashCode(), this);
+                previousFields.Add(GetHashCode(), this);
             }
         }
 
