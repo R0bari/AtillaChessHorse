@@ -45,17 +45,16 @@ namespace AtillaChessHorse
             KingY = kingPosition.Item2;
         }
 
-        public static List<MoveDirections> FindWay(ChessField chessField)
+        public List<MoveDirections> FindWay()
         {
             Dictionary<int, ChessField> wrongFields = new Dictionary<int, ChessField>();
-            FindWayRecurse(chessField, wrongFields, out List<MoveDirections> way);
+            FindWayRecurse(wrongFields, out List<MoveDirections> way);
             return way;
         }
-        private static bool FindWayRecurse(ChessField chessField, 
-            Dictionary<int, ChessField> wrongFields, out List<MoveDirections> way)
+        private bool FindWayRecurse(Dictionary<int, ChessField> wrongFields, out List<MoveDirections> way)
         {
             way = new List<MoveDirections>();
-            if (chessField.IsResult())
+            if (IsResult())
             {
                 //  Путь найден
                 return true;
@@ -66,10 +65,10 @@ namespace AtillaChessHorse
             {
                 MoveDirections currentMove = AllMoves[i];
                 //  Если шаг доступен, пробуем для него все шаги
-                if (chessField.IsMoveAvailable(currentMove, wrongFields))
+                if (IsMoveAvailable(currentMove, wrongFields))
                 {
                     //  Если путь найден, добавить в список way текущий ход
-                    if (ChessField.FindWayRecurse(chessField.MoveHorse(currentMove, wrongFields), wrongFields, out way))
+                    if (MoveHorse(currentMove, wrongFields).FindWayRecurse(wrongFields, out way))
                     {
                         way.Insert(0, currentMove);
                         return true;
@@ -77,7 +76,7 @@ namespace AtillaChessHorse
                 }
             }
 
-            ChessField.AddFieldToDictionary(wrongFields, chessField);
+            AddFieldToDictionary(wrongFields);
             return false;
         }
         public ChessField MoveHorse(MoveDirections direction, Dictionary<int, ChessField> wrongFields)
@@ -185,15 +184,15 @@ namespace AtillaChessHorse
             throw new Exception($"{cellType} not found");
         }
 
-        private static void AddFieldToDictionary(Dictionary<int, ChessField> wrongFields, ChessField field)
+        private void AddFieldToDictionary(Dictionary<int, ChessField> wrongFields)
         {
-            if (!wrongFields.ContainsKey(field.GetHashCode()))
+            if (!wrongFields.ContainsKey(this.GetHashCode()))
             {
-                wrongFields.Add(field.GetHashCode(), field);
+                wrongFields.Add(this.GetHashCode(), this);
             }
-            if (ChessField._previousFields.ContainsKey(field.GetHashCode()))
+            if (ChessField._previousFields.ContainsKey(this.GetHashCode()))
             {
-                ChessField._previousFields.Add(field.GetHashCode(), field);
+                ChessField._previousFields.Add(this.GetHashCode(), this);
             }
         }
 

@@ -26,7 +26,7 @@ namespace AtillaChessHorse
         {
             int count = 0;
             ChessField field = new ChessField(GetRealField());
-            List<MoveDirections> way = ChessField.FindWay(field);
+            List<MoveDirections> way = field.FindWay();
 
             if (way.Count <= 0) {
                 Console.WriteLine("Путь не найден.");
@@ -34,7 +34,7 @@ namespace AtillaChessHorse
                 return;
             }
 
-            Console.WriteLine("Путь найден:\n");
+            Console.WriteLine("Путь найден:");
             for (int i = 0; i < way.Count; ++i)
             {
                 Console.WriteLine($"{++count} {way[i].GetDescription()}");
