@@ -1,6 +1,7 @@
-﻿using System;
+﻿using AtillaChessHorse.Solvers;
+using System;
 using System.Collections.Generic;
-using static AtillaChessHorse.ChessField;
+using static AtillaChessHorse.FieldState;
 
 namespace AtillaChessHorse
 {
@@ -24,21 +25,15 @@ namespace AtillaChessHorse
 
         static void Main(string[] args)
         {
-            int count = 0;
-            ChessField field = new ChessField(GetRealField());
-            List<MoveDirections> way = field.FindWay();
-
-            if (way.Count <= 0) {
-                Console.WriteLine("Путь не найден.");
-                Console.ReadKey();
-                return;
-            }
-
-            Console.WriteLine("Путь найден:");
-            for (int i = 0; i < way.Count; ++i)
-            {
-                Console.WriteLine($"{++count} {way[i].GetDescription()}");
-            }
+            FieldState initState = new FieldState(GetRealField(), 6, 4, 1, 5);
+            NoInfoDepthSolver solver = new NoInfoDepthSolver();
+            var way = solver.Solve(initState);
+            int count = 1;
+            way.ForEach(cell => 
+                { 
+                    Console.WriteLine($"{count}.____________\n" + cell.ToString()); 
+                    count++; 
+                });
 
             Console.ReadKey();
         }
