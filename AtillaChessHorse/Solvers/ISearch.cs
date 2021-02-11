@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace AtillaChessHorse.Solvers
 {
-    public interface ISearch<T>
+    public interface ISearch
     {
-        List<T> Search(IState<T> initState);
+        List<IState> Search(IState initState);
     }
 }

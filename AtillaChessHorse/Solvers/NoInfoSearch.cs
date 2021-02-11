@@ -5,10 +5,10 @@ using static AtillaChessHorse.States.FieldState;
 
 namespace AtillaChessHorse.Solvers
 {
-    public abstract class NoInfoSearch : ISearch<FieldState>
+    public abstract class NoInfoSearch : ISearch
     {
-        protected IEnumerable<FieldState> OpenStates { get; set; }
-        protected readonly Dictionary<int, FieldState> closedStates = new Dictionary<int, FieldState>();
+        protected IEnumerable<IState> OpenStates { get; set; }
+        protected readonly Dictionary<int, IState> closedStates = new Dictionary<int, IState>();
         protected MoveDirections[] AllMoves = new MoveDirections[]
         {
                 MoveDirections.TopLeft,
@@ -21,9 +21,9 @@ namespace AtillaChessHorse.Solvers
                 MoveDirections.LeftTop
         };
 
-        public List<FieldState> Search(IState<FieldState> initState)
+        public List<IState> Search(IState initState)
         {
-            List<FieldState> availableStates = DetermineAvailableFieldStates(initState);
+            List<IState> availableStates = DetermineAvailableFieldStates(initState);
             if (availableStates.Count == 0)
             {
                 throw new Exception("No ways available at start");
@@ -39,12 +39,12 @@ namespace AtillaChessHorse.Solvers
                 AddToOpenStates(DetermineAvailableFieldStates(DeleteFromOpenStates()));
             } while (PeekFromOpenStates() != null);
 
-            return new List<FieldState>();
+            return new List<IState>();
         }
-        protected abstract FieldState PeekFromOpenStates();
-        protected abstract FieldState DeleteFromOpenStates();
-        protected abstract void AddToOpenStates(FieldState state);
-        protected void AddToOpenStates(IEnumerable<FieldState> states)
+        protected abstract IState PeekFromOpenStates();
+        protected abstract IState DeleteFromOpenStates();
+        protected abstract void AddToOpenStates(IState state);
+        protected void AddToOpenStates(IEnumerable<IState> states)
         {
             foreach(var state in states)
             {
@@ -52,9 +52,9 @@ namespace AtillaChessHorse.Solvers
             }
         }
 
-        protected List<FieldState> DetermineAvailableFieldStates(IState<FieldState> state)
+        protected List<IState> DetermineAvailableFieldStates(IState state)
         {
-            List<FieldState> availableStates = new List<FieldState>();
+            List<IState> availableStates = new List<IState>();
             foreach (MoveDirections move in AllMoves)
             {
                 if (state.IsChangeStateAvailable(move, closedStates))
@@ -64,10 +64,10 @@ namespace AtillaChessHorse.Solvers
             }
             return availableStates;
         }
-        protected List<FieldState> FormResultWay(FieldState state)
+        protected List<IState> FormResultWay(IState state)
         {
-            FieldState currentState = (FieldState)state.Clone();
-            List<FieldState> way = new List<FieldState>() { state };
+            IState currentState = (IState)state.Clone();
+            List<IState> way = new List<IState>() { state };
 
             while (currentState.Parent != null)
             {

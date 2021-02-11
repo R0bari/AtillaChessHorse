@@ -7,10 +7,11 @@ using static AtillaChessHorse.States.FieldState;
 
 namespace AtillaChessHorse.States
 {
-    public interface IState<T>
+    public interface IState : ICloneable
     {
-        T Parent { get; set; }
-        T ChangeState(MoveDirections move, Dictionary<int, T> closedStates);
-        bool IsChangeStateAvailable(MoveDirections move, Dictionary<int, T> closedStates);
+        IState Parent { get; set; }
+        IState ChangeState(MoveDirections move, Dictionary<int, IState> closedStates);
+        bool IsChangeStateAvailable(MoveDirections move, Dictionary<int, IState> closedStates);
+        bool IsResult();
     }
 }

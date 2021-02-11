@@ -7,10 +7,10 @@ namespace AtillaChessHorse.Solvers
     {
         public NoInfoDepthSearch()
         {
-            OpenStates = new Stack<FieldState>();
+            OpenStates = new Stack<IState>();
         }
-        protected override FieldState PeekFromOpenStates() => (OpenStates as Stack<FieldState>).Peek();
-        protected override FieldState DeleteFromOpenStates() => (OpenStates as Stack<FieldState>).Pop();
-        protected override void AddToOpenStates(FieldState state) => (OpenStates as Stack<FieldState>).Push(state);
+        protected override IState PeekFromOpenStates() => (OpenStates as Stack<IState>).Peek();
+        protected override IState DeleteFromOpenStates() => (OpenStates as Stack<IState>).Pop();
+        protected override void AddToOpenStates(IState state) => (OpenStates as Stack<IState>).Push(state);
     }
 }

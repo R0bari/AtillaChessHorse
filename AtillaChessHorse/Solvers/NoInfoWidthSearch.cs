@@ -7,10 +7,10 @@ namespace AtillaChessHorse.Solvers
     {
         public NoInfoWidthSearch()
         {
-            OpenStates = new Queue<FieldState>();
+            OpenStates = new Queue<IState>();
         }
-        protected override FieldState PeekFromOpenStates() => (OpenStates as Queue<FieldState>).Peek();
-        protected override FieldState DeleteFromOpenStates() => (OpenStates as Queue<FieldState>).Dequeue();
-        protected override void AddToOpenStates(FieldState state) => (OpenStates as Queue<FieldState>).Enqueue(state);
+        protected override IState PeekFromOpenStates() => (OpenStates as Queue<IState>).Peek();
+        protected override IState DeleteFromOpenStates() => (OpenStates as Queue<IState>).Dequeue();
+        protected override void AddToOpenStates(IState state) => (OpenStates as Queue<IState>).Enqueue(state);
     }
 }

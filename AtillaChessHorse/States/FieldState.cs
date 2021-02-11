@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AtillaChessHorse.States
 {
-    public class FieldState : IState<FieldState>
+    public class FieldState : IState
     {
         public CellTypes[][] Cells { get; set; }
         public int Size { get; set; }
@@ -16,7 +16,7 @@ namespace AtillaChessHorse.States
         public int HorseY { get; set; }
         public int KingX { get; set; }
         public int KingY { get; set; }
-        public FieldState Parent { get; set; }
+        public IState Parent { get; set; }
         public bool IsKingAlreadyReached { get; set; } = false;
         public FieldState(CellTypes[][] cells, int resultHorseX, int resultHorseY)
         {
@@ -41,7 +41,7 @@ namespace AtillaChessHorse.States
             ResultHorseY = resultHorseY;
         }
 
-        public FieldState ChangeState(MoveDirections direction, Dictionary<int, FieldState> closedFields)
+        public IState ChangeState(MoveDirections direction, Dictionary<int, IState> closedFields)
         {
             FieldState cloneField = (FieldState)this.Clone();
             if (IsChangeStateAvailable(direction, closedFields))
@@ -55,7 +55,7 @@ namespace AtillaChessHorse.States
             }
             return cloneField;
         }
-        public bool IsChangeStateAvailable(MoveDirections direction, Dictionary<int, FieldState> closedFields)
+        public bool IsChangeStateAvailable(MoveDirections direction, Dictionary<int, IState> closedFields)
         {
             if (HorseX + GetMoveOffsetX(direction) >= Size || HorseX + GetMoveOffsetX(direction) < 0
                     || HorseY + GetMoveOffsetY(direction) >= Size || HorseY + GetMoveOffsetY(direction) < 0)
