@@ -23,10 +23,10 @@ namespace AtillaChessHorse.Solvers
 
         public List<IState> Search(IState initState)
         {
-            List<IState> availableStates = DetermineAvailableFieldStates(initState);
+            List<IState> availableStates = DetermineAvailableStates(initState);
             if (availableStates.Count == 0)
             {
-                throw new Exception("No ways available at start");
+                throw new Exception("No states available at start");
             }
             AddToOpenStates(availableStates);
 
@@ -34,9 +34,9 @@ namespace AtillaChessHorse.Solvers
             {
                 if (PeekFromOpenStates().IsResult())
                 {
-                    return FormResultWay(PeekFromOpenStates());
+                    return FormResultStateSequence(PeekFromOpenStates());
                 }
-                AddToOpenStates(DetermineAvailableFieldStates(DeleteFromOpenStates()));
+                AddToOpenStates(DetermineAvailableStates(DeleteFromOpenStates()));
             } while (PeekFromOpenStates() != null);
 
             return new List<IState>();
@@ -52,7 +52,7 @@ namespace AtillaChessHorse.Solvers
             }
         }
 
-        protected List<IState> DetermineAvailableFieldStates(IState state)
+        protected List<IState> DetermineAvailableStates(IState state)
         {
             List<IState> availableStates = new List<IState>();
             foreach (MoveDirections move in AllMoves)
@@ -64,7 +64,7 @@ namespace AtillaChessHorse.Solvers
             }
             return availableStates;
         }
-        protected List<IState> FormResultWay(IState state)
+        protected List<IState> FormResultStateSequence(IState state)
         {
             IState currentState = (IState)state.Clone();
             List<IState> way = new List<IState>() { state };
