@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace AtillaChessHorse.Solvers
 {
-    public class NoInfoDepthSolver : Solver
+    public class NoInfoWidthSolver : Solver
     {
-        public NoInfoDepthSolver()
+        public NoInfoWidthSolver()
         {
-            OpenStates = new Queue<FieldState>();
+            OpenStates = new Stack<FieldState>();
         }
         public override List<FieldState> Solve(FieldState initState)
         {
@@ -23,21 +23,21 @@ namespace AtillaChessHorse.Solvers
 
             do
             {
-                if ((OpenStates as Queue<FieldState>).Peek().IsResult())
+                if ((OpenStates as Stack<FieldState>).Peek().IsResult())
                 {
-                    return FormResultWay((OpenStates as Queue<FieldState>).Peek());
+                    return FormResultWay((OpenStates as Stack<FieldState>).Peek());
                 }
-                AddToOpenStates(DetermineAvailableFieldStates((OpenStates as Queue<FieldState>).Dequeue()));
-            } while ((OpenStates as Queue<FieldState>).Peek() != null);
-            
+                AddToOpenStates(DetermineAvailableFieldStates((OpenStates as Stack<FieldState>).Pop()));
+            } while ((OpenStates as Stack<FieldState>).Peek() != null);
+
             return new List<FieldState>();
         }
-        
+
         protected override void AddToOpenStates(IEnumerable<FieldState> states)
         {
             foreach (FieldState state in states)
             {
-                (OpenStates as Queue<FieldState>).Enqueue(state);
+                (OpenStates as Stack<FieldState>).Push(state);
             }
         }
     }

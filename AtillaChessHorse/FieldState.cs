@@ -17,7 +17,7 @@ namespace AtillaChessHorse
         public int KingY { get; set; }
         public FieldState Parent { get; set; }
         public bool IsKingAlreadyReached { get; set; } = false;
-        public FieldState(CellTypes[][] cells, int resultHorseX, int resultHorseY, int kingX, int kingY)
+        public FieldState(CellTypes[][] cells, int resultHorseX, int resultHorseY)
         {
             Size = cells.Length;
             Cells = new CellTypes[cells.Length][];
@@ -29,11 +29,13 @@ namespace AtillaChessHorse
                     Cells[i][j] = cells[i][j];
                 }
             }
-            
-            HorseX = resultHorseX;
-            HorseY = resultHorseY;
-            KingX = kingX;
-            KingY = kingY;
+            var horseCoords = DeterminePosition(CellTypes.H);
+            var kingCoords = DeterminePosition(CellTypes.K);
+
+            HorseX = horseCoords.Item1;
+            HorseY = horseCoords.Item2;
+            KingX = kingCoords.Item1;
+            KingY = kingCoords.Item2;
             ResultHorseX = resultHorseX;
             ResultHorseY = resultHorseY;
         }
@@ -137,8 +139,21 @@ namespace AtillaChessHorse
             throw new Exception("Wrong kind of move.");
         }
 
+        private Tuple<int, int> DeterminePosition(CellTypes cellTypes)
+        {
+            for (int i = 0; i < Size; ++i)
+            {
+                for (int j = 0; j < Size; ++j)
+                {
+                    if (Cells[i][j] == cellTypes)
+                    {
+                        return Tuple.Create(j, i);
+                    }
+                }
+            }
+            return Tuple.Create(-1, -1);
+        }
         private bool DetermineReachingKingStatus() => KingX == HorseX && KingY == HorseY;
-        private void ReachKing() => IsKingAlreadyReached = true;
         public bool IsResult() => (IsHorseInStartPosition() && IsKingAlreadyReached);
         public bool IsHorseInStartPosition() => HorseX == ResultHorseX && HorseY == ResultHorseY;
         public override int GetHashCode()
@@ -179,7 +194,7 @@ namespace AtillaChessHorse
         }
         public object Clone()
         {
-            FieldState cloneField = new FieldState(cells: Cells, ResultHorseX, ResultHorseY, KingX, KingY)
+            FieldState cloneField = new FieldState(cells: Cells, ResultHorseX, ResultHorseY)
             {
                 Size = this.Size,
                 HorseX = this.HorseX,
