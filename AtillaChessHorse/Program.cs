@@ -1,4 +1,4 @@
-﻿using AtillaChessHorse.Solvers;
+﻿using AtillaChessHorse.Searches;
 using AtillaChessHorse.States;
 using System;
 using static AtillaChessHorse.States.FieldState;

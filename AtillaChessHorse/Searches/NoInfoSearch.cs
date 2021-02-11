@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using static AtillaChessHorse.States.FieldState;
 
-namespace AtillaChessHorse.Solvers
+namespace AtillaChessHorse.Searches
 {
     public abstract class NoInfoSearch : ISearch
     {

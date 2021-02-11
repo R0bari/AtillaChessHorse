@@ -1,7 +1,7 @@
 ﻿using AtillaChessHorse.States;
 using System.Collections.Generic;
 
-namespace AtillaChessHorse.Solvers
+namespace AtillaChessHorse.Searches
 {
     public class NoInfoDepthSearch : NoInfoSearch
     {

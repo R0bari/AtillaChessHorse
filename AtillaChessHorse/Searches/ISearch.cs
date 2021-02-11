@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace AtillaChessHorse.Solvers
+namespace AtillaChessHorse.Searches
 {
     public interface ISearch
     {
