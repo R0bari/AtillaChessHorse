@@ -1,13 +1,11 @@
-﻿using System;
+﻿using AtillaChessHorse.States;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AtillaChessHorse.Solvers
 {
-    public interface ISearch
+    public interface ISearch<T>
     {
-        List<FieldState> Search(FieldState initState);
+        List<T> Search(IState<T> initState);
     }
 }

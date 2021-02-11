@@ -44,14 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumExtension.cs" />
-    <Compile Include="Field.cs" />
-    <Compile Include="FieldState.cs" />
+    <Compile Include="States\FieldState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solvers\ISearch.cs" />
     <Compile Include="Solvers\NoInfoDepthSearch.cs" />
     <Compile Include="Solvers\NoInfoWidthSearch.cs" />
     <Compile Include="Solvers\NoInfoSearch.cs" />
+    <Compile Include="States\IState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

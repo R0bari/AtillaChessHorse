@@ -1,111 +1,81 @@
-﻿using System;
+﻿using AtillaChessHorse.States;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace AtillaChessHorse
+namespace AtillaChessHorse.States
 {
-    public class ChessField : ICloneable
+    public class FieldState : IState<FieldState>
     {
-        public static MoveDirections[] AllMoves = new MoveDirections[]
-            {
-                MoveDirections.TopLeft,
-                MoveDirections.TopRight,
-                MoveDirections.RightTop,
-                MoveDirections.RightBottom,
-                MoveDirections.BottomRight,
-                MoveDirections.BottomLeft,
-                MoveDirections.LeftBottom,
-                MoveDirections.LeftTop
-            };
-        private static Dictionary<int, ChessField> PreviousFields { get; set; } = new Dictionary<int, ChessField>();
         public CellTypes[][] Cells { get; set; }
         public int Size { get; set; }
+        public int ResultHorseX { get; private set; }
+        public int ResultHorseY { get; private set; }
         public int HorseX { get; set; }
         public int HorseY { get; set; }
         public int KingX { get; set; }
         public int KingY { get; set; }
-
-        private ChessField(int size = 8)
-        {
-            Size = size;
-            Cells = new CellTypes[size][];
-            for (int i = 0; i < size; ++i)
-            {
-                Cells[i] = new CellTypes[size];
-            }
-        }
-        public ChessField(CellTypes[][] cells)
+        public FieldState Parent { get; set; }
+        public bool IsKingAlreadyReached { get; set; } = false;
+        public FieldState(CellTypes[][] cells, int resultHorseX, int resultHorseY)
         {
             Size = cells.Length;
-            Cells = cells;
-            Tuple<int, int> horsePosition = DeterminePosition(CellTypes.H);
-            Tuple<int, int> kingPosition = DeterminePosition(CellTypes.K);
-            HorseX = horsePosition.Item1;
-            HorseY = horsePosition.Item2;
-            KingX = kingPosition.Item1;
-            KingY = kingPosition.Item2;
-        }
-
-        public List<MoveDirections> FindWay()
-        {
-            Dictionary<int, ChessField> wrongFields = new Dictionary<int, ChessField>();
-            FindWayRecurse(wrongFields, out List<MoveDirections> way);
-            return way;
-        }
-        private bool FindWayRecurse(Dictionary<int, ChessField> wrongFields, out List<MoveDirections> way)
-        {
-            way = new List<MoveDirections>();
-            if (IsResult())
+            Cells = new CellTypes[cells.Length][];
+            for (int i = 0; i < Cells.Length; ++i)
             {
-                //  Путь найден
-                return true;
-            }
-
-            //  Пробуем все шаги по порядку
-            for (int i = 0; i < AllMoves.Length; ++i)
-            {
-                MoveDirections currentMove = AllMoves[i];
-                //  Если шаг доступен, пробуем для него все шаги
-                if (IsMoveAvailable(currentMove, wrongFields))
+                Cells[i] = new CellTypes[cells.Length];
+                for (int j = 0; j < Cells.Length; ++j)
                 {
-                    //  Если путь найден, добавить в список way текущий ход
-                    if (MoveHorse(currentMove, wrongFields).FindWayRecurse(wrongFields, out way))
-                    {
-                        way.Insert(0, currentMove);
-                        return true;
-                    }
+                    Cells[i][j] = cells[i][j];
                 }
             }
+            var horseCoords = DeterminePosition(CellTypes.H);
+            var kingCoords = DeterminePosition(CellTypes.K);
 
-            AddFieldToDictionary(wrongFields);
-            return false;
+            HorseX = horseCoords.Item1;
+            HorseY = horseCoords.Item2;
+            KingX = kingCoords.Item1;
+            KingY = kingCoords.Item2;
+            ResultHorseX = resultHorseX;
+            ResultHorseY = resultHorseY;
         }
-        public ChessField MoveHorse(MoveDirections direction, Dictionary<int, ChessField> wrongFields)
+
+        public FieldState ChangeState(MoveDirections direction, Dictionary<int, FieldState> closedFields)
         {
-            ChessField cloneField = (ChessField)this.Clone();
-            if (IsMoveAvailable(direction, wrongFields))
+            FieldState cloneField = (FieldState)this.Clone();
+            if (IsChangeStateAvailable(direction, closedFields))
             {
                 cloneField.ChangeHorseCoords(direction);
             }
+            cloneField.Parent = this;
+            if (!cloneField.IsKingAlreadyReached)
+            {
+                cloneField.IsKingAlreadyReached = cloneField.DetermineReachingKingStatus();
+            }
             return cloneField;
         }
-        public bool IsMoveAvailable(MoveDirections direction, Dictionary<int, ChessField> wrongFields)
+        public bool IsChangeStateAvailable(MoveDirections direction, Dictionary<int, FieldState> closedFields)
         {
             if (HorseX + GetMoveOffsetX(direction) >= Size || HorseX + GetMoveOffsetX(direction) < 0
                     || HorseY + GetMoveOffsetY(direction) >= Size || HorseY + GetMoveOffsetY(direction) < 0)
             {
                 return false;
             }
-            
+
             if (Cells[HorseY + GetMoveOffsetY(direction)][HorseX + GetMoveOffsetX(direction)] == CellTypes.D)
             {
                 return false;
             }
+            if (HorseX + GetMoveOffsetX(direction) == ResultHorseX && HorseY + GetMoveOffsetY(direction) == ResultHorseY
+                    && !IsKingAlreadyReached)
+            {
+                return false;
+            }
 
-            ChessField cloneField = (ChessField)this.Clone();
+            FieldState cloneField = (FieldState)this.Clone();
             cloneField.ChangeHorseCoords(direction);
-            if (wrongFields.ContainsKey(cloneField.GetHashCode()))
+            if (closedFields.ContainsKey(cloneField.GetHashCode()))
             {
                 return false;
             }
@@ -116,7 +86,8 @@ namespace AtillaChessHorse
         {
             try
             {
-                Cells[HorseY][HorseX] = CellTypes.D;
+                //  Если положение не стартовое, блокируем клетку
+                Cells[HorseY][HorseX] = IsHorseInStartPosition() ? CellTypes.A : CellTypes.D;
                 //  Изменяем положение коня
                 HorseX += GetMoveOffsetX(direction);
                 HorseY += GetMoveOffsetY(direction);
@@ -128,8 +99,6 @@ namespace AtillaChessHorse
                 throw new Exception($"{direction} is impossible move.");
             }
         }
-        public bool IsResult() => (KingX == HorseX && KingY == HorseY);
-
         private int GetMoveOffsetX(MoveDirections direction)
         {
             if (direction == MoveDirections.TopLeft || direction == MoveDirections.BottomLeft)
@@ -171,37 +140,27 @@ namespace AtillaChessHorse
             throw new Exception("Wrong kind of move.");
         }
 
-        private Tuple<int, int> DeterminePosition(CellTypes cellType)
+        private Tuple<int, int> DeterminePosition(CellTypes cellTypes)
         {
             for (int i = 0; i < Size; ++i)
             {
                 for (int j = 0; j < Size; ++j)
                 {
-                    if (Cells[i][j] == cellType)
+                    if (Cells[i][j] == cellTypes)
                     {
                         return Tuple.Create(j, i);
                     }
                 }
             }
-            throw new Exception($"{cellType} not found");
+            return Tuple.Create(-1, -1);
         }
-
-        private void AddFieldToDictionary(Dictionary<int, ChessField> wrongFields)
-        {
-            if (!wrongFields.ContainsKey(GetHashCode()))
-            {
-                wrongFields.Add(GetHashCode(), this);
-            }
-            if (PreviousFields.ContainsKey(GetHashCode()))
-            {
-                PreviousFields.Add(GetHashCode(), this);
-            }
-        }
-
-
+        private bool DetermineReachingKingStatus() => KingX == HorseX && KingY == HorseY;
+        public bool IsResult() => (IsHorseInStartPosition() && IsKingAlreadyReached);
+        public bool IsHorseInStartPosition() => HorseX == ResultHorseX && HorseY == ResultHorseY;
         public override int GetHashCode()
         {
-            long hash = 0, count = 0;
+            //  77232917 - просто число Мерсенна
+            long hash = IsKingAlreadyReached ? 77232917 : 0, count = 0;
             for (int i = 0; i < Size; ++i)
             {
                 for (int j = 0; j < Size; ++j)
@@ -227,22 +186,22 @@ namespace AtillaChessHorse
         }
         public override bool Equals(object obj)
         {
-            if (!(obj is ChessField))
+            if (!(obj is FieldState))
             {
                 return false;
             }
-            ChessField anotherField = (ChessField)obj;
+            FieldState anotherField = (FieldState)obj;
             return anotherField.GetHashCode() == this.GetHashCode();
         }
         public object Clone()
         {
-            ChessField cloneField = new ChessField
+            FieldState cloneField = new FieldState(cells: Cells, ResultHorseX, ResultHorseY)
             {
                 Size = this.Size,
                 HorseX = this.HorseX,
                 HorseY = this.HorseY,
-                KingX = this.KingX,
-                KingY = this.KingY
+                IsKingAlreadyReached = this.IsKingAlreadyReached,
+                Parent = this.Parent
             };
 
             for (int i = 0; i < this.Size; ++i)

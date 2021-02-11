@@ -1,10 +1,11 @@
-﻿using System;
+﻿using AtillaChessHorse.States;
+using System;
 using System.Collections.Generic;
-using static AtillaChessHorse.FieldState;
+using static AtillaChessHorse.States.FieldState;
 
 namespace AtillaChessHorse.Solvers
 {
-    public abstract class NoInfoSearch : ISearch
+    public abstract class NoInfoSearch : ISearch<FieldState>
     {
         protected IEnumerable<FieldState> OpenStates { get; set; }
         protected readonly Dictionary<int, FieldState> closedStates = new Dictionary<int, FieldState>();
@@ -20,7 +21,7 @@ namespace AtillaChessHorse.Solvers
                 MoveDirections.LeftTop
         };
 
-        public List<FieldState> Search(FieldState initState)
+        public List<FieldState> Search(IState<FieldState> initState)
         {
             List<FieldState> availableStates = DetermineAvailableFieldStates(initState);
             if (availableStates.Count == 0)
@@ -51,14 +52,14 @@ namespace AtillaChessHorse.Solvers
             }
         }
 
-        protected List<FieldState> DetermineAvailableFieldStates(FieldState state)
+        protected List<FieldState> DetermineAvailableFieldStates(IState<FieldState> state)
         {
             List<FieldState> availableStates = new List<FieldState>();
             foreach (MoveDirections move in AllMoves)
             {
-                if (state.IsMoveAvailable(move, closedStates))
+                if (state.IsChangeStateAvailable(move, closedStates))
                 {
-                    availableStates.Add(state.MoveHorse(move, closedStates));
+                    availableStates.Add(state.ChangeState(move, closedStates));
                 }
             }
             return availableStates;

@@ -1,7 +1,7 @@
 ﻿using AtillaChessHorse.Solvers;
+using AtillaChessHorse.States;
 using System;
-using System.Collections.Generic;
-using static AtillaChessHorse.FieldState;
+using static AtillaChessHorse.States.FieldState;
 
 namespace AtillaChessHorse
 {
@@ -25,8 +25,8 @@ namespace AtillaChessHorse
 
         static void Main(string[] args)
         {
-            FieldState initState = new FieldState(GetRealField(), 6, 4);
-            ISearch search = null;
+            IState<FieldState> initState = new FieldState(GetRealField(), 6, 4);
+            ISearch<FieldState> search = null;
             char choise = '0';
 
             while (search == null)
