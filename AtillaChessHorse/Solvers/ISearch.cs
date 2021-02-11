@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AtillaChessHorse.Solvers
 {
-    public interface ISolver
+    public interface ISearch
     {
-        List<FieldState> Solve(FieldState initState);
+        List<FieldState> Search(FieldState initState);
     }
 }

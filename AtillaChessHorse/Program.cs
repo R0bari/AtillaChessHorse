@@ -26,25 +26,25 @@ namespace AtillaChessHorse
         static void Main(string[] args)
         {
             FieldState initState = new FieldState(GetRealField(), 6, 4);
-            ISolver solver = null;
+            ISearch search = null;
             char choise = '0';
 
-            while (solver == null)
+            while (search == null)
             {
                 Console.Write("\"No info\" search. Choose the type:\n1 - Depth;\n2 - Width.\n->");
                 choise = Console.ReadKey().KeyChar;
                 if (choise == '1')
                 {
-                    solver = new NoInfoDepthSolver();
+                    search = new NoInfoDepthSearch();
                 }
                 else if (choise == '2')
                 {
-                    solver = new NoInfoWidthSolver();
+                    search = new NoInfoWidthSearch();
                 }
                 Console.Clear();
             }
 
-            var way = solver.Solve(initState);
+            var way = search.Search(initState);
             int count = 1;
             Console.WriteLine($"-------------------------------\n{(choise == '1' ? "Depth" : "Width")}:\n");
             way.ForEach(cell => 

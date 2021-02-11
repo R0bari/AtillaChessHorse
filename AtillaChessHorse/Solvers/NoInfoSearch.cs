@@ -4,7 +4,7 @@ using static AtillaChessHorse.FieldState;
 
 namespace AtillaChessHorse.Solvers
 {
-    public abstract class Solver : ISolver
+    public abstract class NoInfoSearch : ISearch
     {
         protected IEnumerable<FieldState> OpenStates { get; set; }
         protected readonly Dictionary<int, FieldState> closedStates = new Dictionary<int, FieldState>();
@@ -20,10 +20,38 @@ namespace AtillaChessHorse.Solvers
                 MoveDirections.LeftTop
         };
 
-        public abstract List<FieldState> Solve(FieldState initState);
-        protected abstract void AddToOpenStates(IEnumerable<FieldState> states);
+        public List<FieldState> Search(FieldState initState)
+        {
+            List<FieldState> availableStates = DetermineAvailableFieldStates(initState);
+            if (availableStates.Count == 0)
+            {
+                throw new Exception("No ways available at start");
+            }
+            AddToOpenStates(availableStates);
 
-        protected IEnumerable<FieldState> DetermineAvailableFieldStates(FieldState state)
+            do
+            {
+                if (PeekFromOpenStates().IsResult())
+                {
+                    return FormResultWay(PeekFromOpenStates());
+                }
+                AddToOpenStates(DetermineAvailableFieldStates(DeleteFromOpenStates()));
+            } while (PeekFromOpenStates() != null);
+
+            return new List<FieldState>();
+        }
+        protected abstract FieldState PeekFromOpenStates();
+        protected abstract FieldState DeleteFromOpenStates();
+        protected abstract void AddToOpenStates(FieldState state);
+        protected void AddToOpenStates(IEnumerable<FieldState> states)
+        {
+            foreach(var state in states)
+            {
+                AddToOpenStates(state);
+            }
+        }
+
+        protected List<FieldState> DetermineAvailableFieldStates(FieldState state)
         {
             List<FieldState> availableStates = new List<FieldState>();
             foreach (MoveDirections move in AllMoves)
