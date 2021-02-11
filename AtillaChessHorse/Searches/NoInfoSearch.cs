@@ -30,18 +30,16 @@ namespace AtillaChessHorse.Searches
             }
             AddToOpenStates(availableStates);
 
-            do
+            IState currentState;
+            while ((currentState = DeleteFromOpenStates()) != null)
             {
-                if (PeekFromOpenStates().IsResult())
-                {
-                    return FormResultStateSequence(PeekFromOpenStates());
+                if (currentState.IsResult()) {
+                    return FormResultStateSequence(currentState);
                 }
-                AddToOpenStates(DetermineAvailableStates(DeleteFromOpenStates()));
-            } while (PeekFromOpenStates() != null);
-
+                AddToOpenStates(DetermineAvailableStates(currentState));
+            }
             return new List<IState>();
         }
-        protected abstract IState PeekFromOpenStates();
         protected abstract IState DeleteFromOpenStates();
         protected abstract void AddToOpenStates(IState state);
         protected void AddToOpenStates(IEnumerable<IState> states)
