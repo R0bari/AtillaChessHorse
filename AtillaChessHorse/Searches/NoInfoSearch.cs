@@ -30,16 +30,15 @@ namespace AtillaChessHorse.Searches
             }
             AddToOpenStates(availableStates);
 
-            IState currentState = DeleteFromOpenStates();
+            IState currentState;
             do
             {
-                if (currentState.IsResult())
+                if ((currentState = DeleteFromOpenStates()).IsResult())
                 {
                     return FormResultStateSequence(currentState);
                 }
                 AddToOpenStates(DetermineAvailableStates(currentState));
                 AddToClosedStates(currentState);
-                currentState = DeleteFromOpenStates();
             } while (currentState != null);
             throw new Exception("Way not found");
         }
