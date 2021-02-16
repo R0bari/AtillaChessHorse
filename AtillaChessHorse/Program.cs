@@ -45,15 +45,21 @@ namespace AtillaChessHorse
                 Console.Clear();
             }
 
-            var way = search.Search(initState);
-            int count = 1;
-            Console.WriteLine($"-------------------------------\n{(choise == '1' ? "Depth" : "Width")}:\n");
-            way.ForEach(cell => 
-                { 
-                    Console.WriteLine($"{count}.____________\n" + cell.ToString()); 
-                    count++; 
+            try
+            {
+                var way = search.Search(initState);
+                int count = 1;
+                Console.WriteLine($"-------------------------------\n{(choise == '1' ? "Depth" : "Width")}:\n");
+                way.ForEach(cell =>
+                {
+                    Console.WriteLine($"{count}.____________\n" + cell.ToString());
+                    count++;
                 });
-
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }            
             Console.ReadKey();
         }
     }

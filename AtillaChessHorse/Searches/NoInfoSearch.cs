@@ -8,8 +8,8 @@ namespace AtillaChessHorse.Searches
     public abstract class NoInfoSearch : ISearch
     {
         protected IEnumerable<IState> OpenStates { get; set; }
-        protected readonly Dictionary<int, IState> closedStates = new Dictionary<int, IState>();
-        protected MoveDirections[] AllMoves = new MoveDirections[]
+        private readonly Dictionary<int, IState> ClosedStates = new Dictionary<int, IState>();
+        private readonly MoveDirections[] AllMoves = new MoveDirections[]
         {
                 MoveDirections.TopLeft,
                 MoveDirections.TopRight,
@@ -30,15 +30,18 @@ namespace AtillaChessHorse.Searches
             }
             AddToOpenStates(availableStates);
 
-            IState currentState;
-            while ((currentState = DeleteFromOpenStates()) != null)
+            IState currentState = DeleteFromOpenStates();
+            do
             {
-                if (currentState.IsResult()) {
+                if (currentState.IsResult())
+                {
                     return FormResultStateSequence(currentState);
                 }
                 AddToOpenStates(DetermineAvailableStates(currentState));
-            }
-            return new List<IState>();
+                AddToClosedStates(currentState);
+                currentState = DeleteFromOpenStates();
+            } while (currentState != null);
+            throw new Exception("Way not found");
         }
         protected abstract IState DeleteFromOpenStates();
         protected abstract void AddToOpenStates(IState state);
@@ -49,15 +52,23 @@ namespace AtillaChessHorse.Searches
                 AddToOpenStates(state);
             }
         }
+        private void AddToClosedStates(IState state)
+        {
+            int stateHash = state.GetHashCode();
+            if (!ClosedStates.ContainsKey(stateHash))
+            {
+                ClosedStates.Add(stateHash, state);
+            }
+        }
 
         protected List<IState> DetermineAvailableStates(IState state)
         {
             List<IState> availableStates = new List<IState>();
             foreach (MoveDirections move in AllMoves)
             {
-                if (state.IsChangeStateAvailable(move, closedStates))
+                if (state.IsChangeStateAvailable(move, ClosedStates))
                 {
-                    availableStates.Add(state.ChangeState(move, closedStates));
+                    availableStates.Add(state.ChangeState(move, ClosedStates));
                 }
             }
             return availableStates;

@@ -19,3 +19,10 @@ C:\Users\r0bar\OneDrive\Документы\GitHub\AtillaChessHorse\AtillaChessHo
 C:\Users\r0bar\OneDrive\Документы\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CoreCompileInputs.cache
 C:\Users\r0bar\OneDrive\Документы\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.exe
 C:\Users\r0bar\OneDrive\Документы\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.pdb
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe.config
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.exe
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\AtillaChessHorse.pdb
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csprojAssemblyReference.cache
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CoreCompileInputs.cache
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.exe
+C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.pdb
