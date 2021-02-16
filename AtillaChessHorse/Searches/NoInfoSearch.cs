@@ -46,7 +46,7 @@ namespace AtillaChessHorse.Searches
         protected abstract IState DeleteFromOpenStates();
         protected abstract void AddToOpenStates(IState state);
         protected abstract IEnumerable<IState> OrderByHeuristic(IEnumerable<IState> states);
-        protected void AddToOpenStates(IEnumerable<IState> states)
+        private void AddToOpenStates(IEnumerable<IState> states)
         {
             foreach(var state in states)
             {
@@ -62,7 +62,7 @@ namespace AtillaChessHorse.Searches
             }
         }
 
-        protected List<IState> DetermineAvailableStates(IState state)
+        private List<IState> DetermineAvailableStates(IState state)
         {
             List<IState> availableStates = new List<IState>();
             foreach (MoveDirections move in AllMoves)
@@ -74,7 +74,7 @@ namespace AtillaChessHorse.Searches
             }
             return OrderByHeuristic(availableStates).ToList();
         }
-        protected List<IState> FormResultStateSequence(IState state)
+        private List<IState> FormResultStateSequence(IState state)
         {
             IState currentState = (IState)state.Clone();
             List<IState> way = new List<IState>() { state };

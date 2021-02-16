@@ -267,7 +267,7 @@ namespace AtillaChessHorse.States
         }
         public enum Heuristics 
         {
-            ManhattanDistance = 0
+            ManhattanDistance = 0   //  Searches the direct way to the aim
         }
     }
 }
