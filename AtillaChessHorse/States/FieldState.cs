@@ -15,6 +15,8 @@ namespace AtillaChessHorse.States
         public int KingX { get; set; }
         public int KingY { get; set; }
         public IState Parent { get; set; }
+        public Heuristics CurrentHeuristicType { get; set; } = Heuristics.ManhattanDistance;
+        public int CurrentHeuristicValue { get; set; }
         public bool IsKingAlreadyReached { get; set; } = false;
         public FieldState(CellTypes[][] cells, int resultHorseX, int resultHorseY)
         {
@@ -51,6 +53,7 @@ namespace AtillaChessHorse.States
             {
                 cloneField.IsKingAlreadyReached = cloneField.DetermineReachingKingStatus();
             }
+            cloneField.CalculateHeuristic();
             return cloneField;
         }
         public bool IsChangeStateAvailable(MoveDirections direction, Dictionary<int, IState> closedFields)
@@ -79,6 +82,17 @@ namespace AtillaChessHorse.States
             }
 
             return true;
+        }
+        public int CalculateHeuristic()
+        {
+            Tuple<int, int> aim = IsKingAlreadyReached ? Tuple.Create(ResultHorseX, ResultHorseY) : Tuple.Create(KingX, KingY);
+            switch (CurrentHeuristicType)
+            {
+                case Heuristics.ManhattanDistance:
+                    CurrentHeuristicValue = Math.Abs(HorseX - aim.Item1) + Math.Abs(HorseY - aim.Item2);
+                    return CurrentHeuristicValue;
+                default: return -1;
+            }
         }
         private void ChangeHorseCoords(MoveDirections direction)
         {
@@ -155,10 +169,29 @@ namespace AtillaChessHorse.States
         private bool DetermineReachingKingStatus() => KingX == HorseX && KingY == HorseY;
         public bool IsResult() => (IsHorseInStartPosition() && IsKingAlreadyReached);
         public bool IsHorseInStartPosition() => HorseX == ResultHorseX && HorseY == ResultHorseY;
+
+        public int CompareTo(object other)
+        {
+            if (other == null || !(other is FieldState otherState))
+            {
+                return 1;
+            }
+
+            int currentHeuristic = this.CalculateHeuristic();
+            int otherHeuristic = otherState.CalculateHeuristic();
+            if (currentHeuristic < otherHeuristic)
+                return 1;
+            else if (currentHeuristic > otherHeuristic)
+                return -1;
+            else
+                return 0;
+        }
+
         public override int GetHashCode()
         {
             //  77232917 - просто число Мерсенна
             long hash = IsKingAlreadyReached ? 77232917 : 0, count = 0;
+            hash += (int)Math.Pow(CurrentHeuristicValue, 13);
             for (int i = 0; i < Size; ++i)
             {
                 for (int j = 0; j < Size; ++j)
@@ -199,6 +232,7 @@ namespace AtillaChessHorse.States
                 HorseX = this.HorseX,
                 HorseY = this.HorseY,
                 IsKingAlreadyReached = this.IsKingAlreadyReached,
+                CurrentHeuristicValue = this.CalculateHeuristic(),
                 Parent = this.Parent
             };
 
@@ -230,6 +264,10 @@ namespace AtillaChessHorse.States
             BottomLeft = 5,
             LeftBottom = 6,
             LeftTop = 7
+        }
+        public enum Heuristics 
+        {
+            ManhattanDistance = 0
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AtillaChessHorse.States;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static AtillaChessHorse.States.FieldState;
 
 namespace AtillaChessHorse.Searches
@@ -37,13 +38,14 @@ namespace AtillaChessHorse.Searches
                 {
                     return FormResultStateSequence(currentState);
                 }
-                AddToOpenStates(DetermineAvailableStates(currentState));
                 AddToClosedStates(currentState);
+                AddToOpenStates(DetermineAvailableStates(currentState));
             } while (currentState != null);
             throw new Exception("Way not found");
         }
         protected abstract IState DeleteFromOpenStates();
         protected abstract void AddToOpenStates(IState state);
+        protected abstract IEnumerable<IState> OrderByHeuristic(IEnumerable<IState> states);
         protected void AddToOpenStates(IEnumerable<IState> states)
         {
             foreach(var state in states)
@@ -70,7 +72,7 @@ namespace AtillaChessHorse.Searches
                     availableStates.Add(state.ChangeState(move, ClosedStates));
                 }
             }
-            return availableStates;
+            return OrderByHeuristic(availableStates).ToList();
         }
         protected List<IState> FormResultStateSequence(IState state)
         {
