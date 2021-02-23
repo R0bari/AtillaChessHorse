@@ -29,31 +29,37 @@ namespace AtillaChessHorse.Searches
             {
                 throw new Exception("No states available at start");
             }
-            AddToOpenStates(availableStates);
+            AddToOpen(availableStates);
 
             IState currentState;
             do
             {
-                if ((currentState = DeleteFromOpenStates()).IsResult())
+                if ((currentState = DeleteFromOpen()).IsResult())
                 {
                     return FormResultStateSequence(currentState);
                 }
-                AddToClosedStates(currentState);
-                AddToOpenStates(DetermineAvailableStates(currentState));
+                AddToClosed(currentState);
+                var newStates = DetermineAvailableStates(currentState);
+                if (OpenStates.Count() + newStates.Count() > 7)
+                {
+                    DeleteWorstStateFromOpen();
+                }
+                AddToOpen(newStates);
             } while (currentState != null);
             throw new Exception("Way not found");
         }
-        protected abstract IState DeleteFromOpenStates();
+        protected abstract IState DeleteFromOpen();
+        protected abstract IState DeleteWorstStateFromOpen();
         protected abstract void AddToOpenStates(IState state);
         protected abstract IEnumerable<IState> OrderByHeuristic(IEnumerable<IState> states);
-        private void AddToOpenStates(IEnumerable<IState> states)
+        private void AddToOpen(IEnumerable<IState> states)
         {
             foreach(var state in states)
             {
                 AddToOpenStates(state);
             }
         }
-        private void AddToClosedStates(IState state)
+        private void AddToClosed(IState state)
         {
             int stateHash = state.GetHashCode();
             if (!ClosedStates.ContainsKey(stateHash))
@@ -72,7 +78,7 @@ namespace AtillaChessHorse.Searches
                     availableStates.Add(state.ChangeState(move, ClosedStates));
                 }
             }
-            return OrderByHeuristic(availableStates).ToList();
+            return availableStates;
         }
         private List<IState> FormResultStateSequence(IState state)
         {

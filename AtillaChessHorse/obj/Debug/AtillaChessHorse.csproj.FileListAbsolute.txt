@@ -26,3 +26,7 @@ C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\Atil
 C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CoreCompileInputs.cache
 C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.exe
 C:\Users\r0bar\Documents\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.pdb
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\PriorityQueue.dll
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\PriorityQueue.pdb
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\bin\Debug\PriorityQueue.xml
+D:\GitHub\AtillaChessHorse\AtillaChessHorse\obj\Debug\AtillaChessHorse.csproj.CopyComplete

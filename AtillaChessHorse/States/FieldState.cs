@@ -226,7 +226,7 @@ namespace AtillaChessHorse.States
         }
         public object Clone()
         {
-            FieldState cloneField = new FieldState(cells: Cells, ResultHorseX, ResultHorseY)
+            FieldState cloneField = new FieldState(Cells, ResultHorseX, ResultHorseY)
             {
                 Size = this.Size,
                 HorseX = this.HorseX,
