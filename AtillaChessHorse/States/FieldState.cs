@@ -15,6 +15,7 @@ namespace AtillaChessHorse.States
         public int KingX { get; set; }
         public int KingY { get; set; }
         public IState Parent { get; set; }
+        public IState Child { get; set; }
         public Heuristics CurrentHeuristicType { get; set; } = Heuristics.ManhattanDistance;
         public int CurrentHeuristicValue { get; set; }
         public bool IsKingAlreadyReached { get; set; } = false;

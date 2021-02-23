@@ -8,6 +8,7 @@ namespace AtillaChessHorse.Searches
 {
     public abstract class NoInfoSearch : ISearch
     {
+        public int OpenStatesMaxSize { get; private set; } = 7;
         protected IEnumerable<IState> OpenStates { get; set; }
         private readonly Dictionary<int, IState> ClosedStates = new Dictionary<int, IState>();
         private readonly MoveDirections[] AllMoves = new MoveDirections[]
@@ -34,29 +35,51 @@ namespace AtillaChessHorse.Searches
             IState currentState;
             do
             {
+                //  Проверка достижения цели
                 if ((currentState = DeleteFromOpen()).IsResult())
                 {
                     return FormResultStateSequence(currentState);
                 }
                 AddToClosed(currentState);
-                var newStates = DetermineAvailableStates(currentState);
-                if (OpenStates.Count() + newStates.Count() > 7)
+                if (currentState.Child != null)
                 {
-                    DeleteWorstStateFromOpen();
+                    AddToOpen(currentState.Child);
+                    currentState.Child = null;
+                }
+                //  Определение следующих состояний
+                var newStates = DetermineAvailableStates(currentState);
+                //  Проверка на переполнение списка открытых состояний
+                while (!IsAvailabaleToAddToOpen(newStates))
+                {
+                    CorrectOpen();
                 }
                 AddToOpen(newStates);
+
             } while (currentState != null);
             throw new Exception("Way not found");
         }
         protected abstract IState DeleteFromOpen();
         protected abstract IState DeleteWorstStateFromOpen();
-        protected abstract void AddToOpenStates(IState state);
+        /// <summary> 
+        ///  Удаляем состояние c наихудшей эвристикой из списка открытых состояний и заносим его в 
+        ///  новое худшее состояние, чтобы при необходимости его можно было восстановить
+        /// </summary>
+        private void CorrectOpen()
+        {
+            var deletedNode = DeleteWorstStateFromOpen();
+            var secondWorstNode = DeleteWorstStateFromOpen();
+            secondWorstNode.Child = deletedNode;
+            AddToOpen(secondWorstNode);
+        }
+        protected abstract void AddToOpen(IState state);
         protected abstract IEnumerable<IState> OrderByHeuristic(IEnumerable<IState> states);
+        private bool IsAvailabaleToAddToOpen(IEnumerable<IState> newStates) =>
+            OpenStates.Count() + newStates.Count() <= OpenStatesMaxSize;
         private void AddToOpen(IEnumerable<IState> states)
         {
             foreach(var state in states)
             {
-                AddToOpenStates(state);
+                AddToOpen(state);
             }
         }
         private void AddToClosed(IState state)

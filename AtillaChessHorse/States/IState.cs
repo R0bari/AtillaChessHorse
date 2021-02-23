@@ -9,6 +9,7 @@ namespace AtillaChessHorse.States
         Heuristics CurrentHeuristicType { get; set; }
         int CurrentHeuristicValue { get; set; }
         IState Parent { get; set; }
+        IState Child { get; set; }
         IState ChangeState(MoveDirections move, Dictionary<int, IState> closedStates);
         bool IsChangeStateAvailable(MoveDirections move, Dictionary<int, IState> closedStates);
         int CalculateHeuristic();

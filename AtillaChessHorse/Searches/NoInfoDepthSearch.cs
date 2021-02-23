@@ -12,7 +12,7 @@ namespace AtillaChessHorse.Searches
             OpenStates = new Stack<IState>();
         }
         protected override IState DeleteFromOpen() => (OpenStates as Stack<IState>).Pop();
-        protected override void AddToOpenStates(IState state) => (OpenStates as Stack<IState>).Push(state);
+        protected override void AddToOpen(IState state) => (OpenStates as Stack<IState>).Push(state);
         //  Sort desc because after adding to stack the state with 
         //  the best (least) heuristic will be pop first
         protected override IEnumerable<IState> OrderByHeuristic(IEnumerable<IState> states) =>
