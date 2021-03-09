@@ -7,6 +7,6 @@ namespace AtillaChessHorse.Searches
     public interface ISearch
     {
            int OpenStatesMaxSize { get; }
-           List<IState> Search(IState initState);
+           List<IState> Search(IState initState, out int stepCount, out int maxStatesCount);
     }
 }

@@ -63,7 +63,8 @@ namespace AtillaChessHorse
 
             try
             {
-                var way = search.Search(initState);
+                var start = DateTime.Now;
+                var way = search.Search(initState, out int stepCount, out int maxStatesCount);
                 int count = 1;
                 Console.WriteLine($"-------------------------------\n{(choise == '1' ? "Depth" : "Width")}:\n");
                 way.ForEach(cell =>
@@ -71,6 +72,10 @@ namespace AtillaChessHorse
                     Console.WriteLine($"{count}.____________\n" + cell.ToString());
                     count++;
                 });
+                var totalDuration = (DateTime.Now - start).TotalMilliseconds;
+                Console.WriteLine($"Total steps:{stepCount}");
+                Console.WriteLine($"Total time:{totalDuration}");
+                Console.WriteLine($"Memory:{maxStatesCount}");
             }
             catch (Exception exception)
             {

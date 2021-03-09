@@ -8,7 +8,7 @@ namespace AtillaChessHorse.Searches
 {
     public abstract class NoInfoSearch : ISearch
     {
-        public int OpenStatesMaxSize { get; private set; } = 7;
+        public int OpenStatesMaxSize { get; private set; } = 8;
         protected IEnumerable<IState> OpenStates { get; set; }
         private readonly Dictionary<int, IState> ClosedStates = new Dictionary<int, IState>();
         private readonly MoveDirections[] AllMoves = new MoveDirections[]
@@ -23,8 +23,10 @@ namespace AtillaChessHorse.Searches
                 MoveDirections.LeftTop
         };
 
-        public List<IState> Search(IState initState)
+        public List<IState> Search(IState initState, out int stepCount, out int maxStatesCount)
         {
+            stepCount = 0;
+            maxStatesCount = 0;
             List<IState> availableStates = DetermineAvailableStates(initState);
             if (availableStates.Count == 0)
             {
@@ -35,6 +37,11 @@ namespace AtillaChessHorse.Searches
             IState currentState;
             do
             {
+                ++stepCount;
+                if (maxStatesCount < OpenStates.Count())
+                {
+                    maxStatesCount = OpenStates.Count();
+                }
                 //  Проверка достижения цели
                 if ((currentState = DeleteFromOpen()).IsResult())
                 {
